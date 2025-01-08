@@ -19,6 +19,8 @@ class NotificationManager():
 
         if res['success'] == False:
             print("No data for requested visa")
+            for notificationHandle in self.__handleList:
+                notificationHandle.send(res)
             return
 
         if res['status'] == "Refused":
