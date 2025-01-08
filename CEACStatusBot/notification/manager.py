@@ -17,6 +17,10 @@ class NotificationManager():
     def send(self,) -> None:
         res = query_status(self.__location, self.__number, self.__passport_number, self.__surname, self.__captchaHandle)
 
+        if res['success'] == False:
+            print("No data for requested visa")
+            return
+
         if res['status'] == "Refused":
             import os,pytz,datetime
             try:
