@@ -48,7 +48,7 @@ def query_status(application_num, captchaHandle: CaptchaHandle = OnnxCaptchaHand
             "__VIEWSTATEGENERATOR": update_field("__VIEWSTATEGENERATOR"),
             "__VIEWSTATEENCRYPTED": "",
             "ctl00$ContentPlaceHolder1$Visa_Application_Type": "IV",
-            "ctl00$ContentPlaceHolder1$Location_Dropdown": "All",  # أو يمكن حذفه إن لم يكن ضروريًا
+            "ctl00$ContentPlaceHolder1$Location_Dropdown": "All",  # أو حذفه عند الحاجة
             "ctl00$ContentPlaceHolder1$Visa_Case_Number": application_num,
             "ctl00$ContentPlaceHolder1$Captcha": captcha_num,
             "LBD_VCID_c_status_ctl00_contentplaceholder1_defaultcaptcha": update_field("LBD_VCID_c_status_ctl00_contentplaceholder1_defaultcaptcha"),
@@ -65,18 +65,18 @@ def query_status(application_num, captchaHandle: CaptchaHandle = OnnxCaptchaHand
         soup = BeautifulSoup(r.text, features="lxml")
         status_tag = soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatus")
         if not status_tag:
-            continue  # captcha غالبًا خطأ، أعد المحاولة
+            continue  # غالبًا الكابتشا خطأ
 
         try:
             result = {
                 "success": True,
                 "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-                "visa_type": soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblAppName").text.strip(),
+                "visa_type": soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblCaseTitle").text.strip(),
                 "status": status_tag.text.strip(),
                 "case_created": soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblSubmitDate").text.strip(),
                 "case_last_updated": soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblStatusDate").text.strip(),
-                "description": soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblMessage").text.strip(),
-                "application_num": soup.find("span", id="ctl00_ContentPlaceHolder1_ucApplicationStatusView_lblCaseNo").text.strip(),
+                "description": "",  # لا يوجد حقل لوصف الحالة
+                "application_num": application_num,
                 "application_num_origin": application_num
             }
             isSuccess = True
