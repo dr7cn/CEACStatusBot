@@ -1,21 +1,18 @@
 from .handle import NotificationHandle
 from CEACStatusBot.request import query_status
-from CEACStatusBot.captcha import CaptchaHandle,OnnxCaptchaHandle
+from CEACStatusBot.captcha import CaptchaHandle, OnnxCaptchaHandle
 
-class NotificationManager():
-    def __init__(self,location:str,number:str,passport_number:str,surname:str,captchaHandle:CaptchaHandle=OnnxCaptchaHandle("captcha.onnx")) -> None:
+class NotificationManager:
+    def __init__(self, number: str, captchaHandle: CaptchaHandle = OnnxCaptchaHandle("captcha.onnx")) -> None:
         self.__handleList = []
-        self.__location = location
         self.__number = number
         self.__captchaHandle = captchaHandle
-        self.__passport_number = passport_number
-        self.__surname = surname
 
-    def addHandle(self, notificationHandle:NotificationHandle) -> None:
+    def addHandle(self, notificationHandle: NotificationHandle) -> None:
         self.__handleList.append(notificationHandle)
 
-    def send(self,) -> None:
-        res = query_status(self.__location, self.__number, self.__passport_number, self.__surname, self.__captchaHandle)
+    def send(self) -> None:
+        res = query_status(self.__number, self.__captchaHandle)
 
         if res['success'] == False:
             print("No data for requested visa")
@@ -23,17 +20,18 @@ class NotificationManager():
                 notificationHandle.send(res)
             return
 
+        # حالة الرفض: يمكن تأجيل التنبيه خارج أوقات العمل
         if res['status'] == "Refused":
-            import os,pytz,datetime
+            import os, pytz, datetime
             try:
                 TIMEZONE = os.environ["TIMEZONE"]
                 localTimeZone = pytz.timezone(TIMEZONE)
                 localTime = datetime.datetime.now(localTimeZone)
             except pytz.exceptions.UnknownTimeZoneError:
-                print("UNKNOWN TIMEZONE Error, use default")
+                print("UNKNOWN TIMEZONE Error, using default")
                 localTime = datetime.datetime.now()
             except KeyError:
-                print("TIMEZONE Error")
+                print("TIMEZONE not set, using default")
                 localTime = datetime.datetime.now()
 
             if localTime.hour < 8 or localTime.hour > 22:
