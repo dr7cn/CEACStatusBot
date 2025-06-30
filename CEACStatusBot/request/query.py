@@ -29,7 +29,7 @@ def query_status(location, application_num, passport_number, surname, captchaHan
         # -------NIV page------
         try:
             # 发送请求的代码
-            r = session.get(url=f"{ROOT}/ceacstattracker/status.aspx?App=NIV", headers=headers)
+            r = session.get(url=f"{ROOT}/ceacstattracker/status.aspx?App=IV", headers=headers)
         except Exception as e:
             # 处理连接错误异常
             print(e)
@@ -66,7 +66,7 @@ def query_status(location, application_num, passport_number, surname, captchaHan
             "__VIEWSTATE": "8GJOG5GAuT1ex7KX3jakWssS08FPVm5hTO2feqUpJk8w5ukH4LG/o39O4OFGzy/f2XLN8uMeXUQBDwcO9rnn5hdlGUfb2IOmzeTofHrRNmB/hwsFyI4mEx0mf7YZo19g",
             "__VIEWSTATEGENERATOR": "DBF1011F",
             "__VIEWSTATEENCRYPTED": "",
-            "ctl00$ContentPlaceHolder1$Visa_Application_Type": "NIV",
+            "ctl00$ContentPlaceHolder1$Visa_Application_Type": "IV",
             "ctl00$ContentPlaceHolder1$Location_Dropdown": location,
             "ctl00$ContentPlaceHolder1$Visa_Case_Number": application_num,
             "ctl00$ContentPlaceHolder1$Captcha": "34HDM",
@@ -91,7 +91,7 @@ def query_status(location, application_num, passport_number, surname, captchaHan
         # -------Result page------
         try:
             # 发送请求的代码
-            r = session.post(url=f"{ROOT}/ceacstattracker/status.aspx", headers=headers, data=data)
+            r = session.post(url=f"{ROOT}/ceacstattracker/status.aspx?App=IV", headers=headers, data=data)
         except Exception as e:
             # 处理连接错误异常
             print(e)
